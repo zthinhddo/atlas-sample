@@ -1,29 +1,38 @@
-name: Push Docker
+name: Push and Pull CI
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     branches:
       - develop
 jobs:
-  docker-push:
+  atlas-migration:
     runs-on: ubuntu-latest
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: example
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    run: echo "Database is running at ${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}"
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out source code
+        uses: actions/checkout@v3
+      - name: Installing Atlas
+        run: curl -sSf https://atlasgo.sh | sh
+      - name: Hash Migration (Option)
+        run: atlas migrate hash
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Login to GitHub Container Registry
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD_TOKEN }}
+      - name: Build and push new image to Docker Hub
         uses: docker/build-push-action@v3
         with:
+          context: .
           push: true
-          file: ${{ matrix.file }}
-          tags: ghcr.io/ariga/atlas-sample:${{ github.sha }}
+          tags: thinhddo/atlas-local:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
