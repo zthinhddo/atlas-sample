@@ -104,4 +104,4 @@ atlas schema apply \
 - [Analyzer + Linting](https://atlasgo.io/lint/analyzers)
 - [Troubleshooting](https://atlasgo.io/blog/2023/04/10/troubleshooting-migrations)
 - [Atlat URLs](https://atlasgo.io/concepts/url)
-
+- [Setup docker container](https://atlasgo.io/guides/deploying/image)
