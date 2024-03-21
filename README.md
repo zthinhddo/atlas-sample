@@ -101,6 +101,11 @@ Example 02
 atlas schema apply --env [env-name] -f [name-of-schema].sql
 ```
 
+### (Optional) Reverting migrations
+```s
+atlas schema apply --env [env-name] --to "file://migrations?version=[version_number]"
+```
+
 ### Step 6. Refer **Atlas Cloud Guides** to push migrations to Atlas Cloud Registry
 
 ## Notes

@@ -46,5 +46,12 @@ env "dev" {
       drop_table  = var.destructive
     }
   }
+  # Detect destructive change in schema
+  # Change this if developers want to drop columns/table/schemas locally
+  lint {
+    destructive {
+      error = true
+    }
+  }
   to = "file://schema.sql"
 }
