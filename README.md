@@ -81,8 +81,11 @@ atlas migrate hash
 
 ### Step 4. Generating migrations
 ```sh
-sudo atlas migrate diff initial --to file://schema.sql --dev-url "docker://postgres/15/example?search_path=public" --format '{{ sql . " " }}'
-
+sudo atlas migrate diff initial --to file://schema.sql --dev-url "docker://postgres/15/example?search_path=public" --format '{{ sql . " " }}
+```
+Example 02
+```sh
+sudo atlas migrate diff --to "file://[schema-file-name].sql"
 ```
 
 ### Step 5. Applying new schema (migration)
@@ -92,6 +95,10 @@ atlas schema apply \
   --to "file://migrations" \
   --dev-url "docker://postgres/15/example" \
   --exclude 'atlas_schema_revisions'
+```
+Example 02
+```sh
+atlas schema apply --env [env-name] -f [name-of-schema].sql
 ```
 
 ### Step 6. Refer **Atlas Cloud Guides** to push migrations to Atlas Cloud Registry
