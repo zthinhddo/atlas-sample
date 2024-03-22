@@ -6,7 +6,7 @@
 
 *|Environments setup options*
 - *Linux:* `curl -sSf https://atlasgo.sh | sh`
-- *Windows:* ``
+- *Windows:* `Download binary file and put it in ENV PATH` ([released version](https://release.ariga.io/atlas/atlas-windows-amd64-latest.exe))
 
 ## 1.1 Use Cases
 - [ ] Inspecting and visualing database schema
@@ -25,19 +25,19 @@
 ```sh
 atlas login
 ```
-![Succesfull Atlas login message](image.jpg)
 
-### Step 2. Access Atlas sample: [click here](https://github.com/zthinhddo/atlas-sample)
-### Step 3. Push project to Atlas cloud
-```sh
-sudo atlas migrate push app --dev-url "docker://postgres/15/[db_name]?search_path=[schema_name]"
-```
-- If for some reasons, you need to delete files in **migrations** folder, after deleting the file remember to do hashing again
+### Step 2. Push project to Atlas cloud
+- (Optional) If for some reasons, you need to edit files in **migrations** folder, after deleting the file remember to do hashing again
 ```sh
 atlas migrate hash
 ```
+
+```sh
+sudo atlas migrate push app --dev-url "docker://postgres/15/[db_name]?search_path=[schema_name]"
+```
+
 ### Step 4. Open URL (provided in the terminal) for entering Atlas Cloud Dashboard 
-- Dashboard for this sample: [test-migration dashboard](https://test-migration.atlasgo.cloud/getting-started)
+- Dashboard for this sample: [e.g. test-migration dashboard](https://test-migration.atlasgo.cloud/getting-started)
 
 ### Step 5: Analyzing the migration
 - Run by command
@@ -45,11 +45,11 @@ atlas migrate hash
 sudo atlas migrate lint --env local --latest 1
 ```
 - Interact with UI
-![]()
+![Dashboard UI](/images/atlas-dashboard-ui.png)
 
 
 ## III. Local Atlas Guides
-### Step 1. Create PostgreSQL database container
+### Step 1. Create PostgreSQL database container (OR can you local database)
 ```sh
 docker run --rm -d --name postgres-atlas-demo -p 5432:5432 -e POSTGRES_PASSWORD=1234 -e POSTGRES_USER=postgres -e POSTGRES_DB=example postgres
 ```
@@ -79,7 +79,7 @@ atlas schema diff \
 atlas migrate hash
 ```
 
-### Step 4. Generating migrations
+### Step 4. Generating migrations to migrations directory
 ```sh
 sudo atlas migrate diff initial --to file://schema.sql --dev-url "docker://postgres/15/example?search_path=public" --format '{{ sql . " " }}
 ```
@@ -88,7 +88,7 @@ Example 02
 sudo atlas migrate diff --to "file://[schema-file-name].sql"
 ```
 
-### Step 5. Applying new schema (migration)
+### Step 5. Applying new schema to local/remote database (applying migration step)
 ```sh
 atlas schema apply \
   --url "postgres://postgres:1234@localhost:5432/example?sslmode=disable" \
@@ -96,12 +96,12 @@ atlas schema apply \
   --dev-url "docker://postgres/15/example" \
   --exclude 'atlas_schema_revisions'
 ```
-Example 02
+Example 02: If already setup atlas.hcl configuration for each environment
 ```sh
 atlas schema apply --env [env-name] -f [name-of-schema].sql
 ```
 
-### (Optional) Reverting migrations
+### (Optional) Reverting migrations of specific version
 ```s
 atlas schema apply --env [env-name] --to "file://migrations?version=[version_number]"
 ```

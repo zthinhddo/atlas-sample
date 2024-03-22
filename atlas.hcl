@@ -33,13 +33,28 @@ variable "destructive" {
   default = false
 }
 
+docker "postgres" "dev" {
+  image  = "postgres:15"
+  schema = "public"
+  baseline = <<SQL
+   CREATE SCHEMA "auth";
+   CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "auth";
+   CREATE TABLE "auth"."users" ("id" uuid NOT NULL DEFAULT auth.uuid_generate_v4(), PRIMARY KEY ("id"));
+  SQL
+}
+
 env "dev" {
+  # option: --url: (URL)
   url = "postgres://${var.pg_user}:${var.pg_pass}@${var.pg_host}:${var.pg_port}/${var.pg_db}"
+  # option: --dev-url (Placeholder docker container for comparing database schema)
+  dev = "docker://postgres/15/atlas-demo"
+  # option: -to (migrations directory)
   migration {
     dir = "file://migrations"
   }
-  dev = "docker://postgres/15/atlas-demo"
+  # option: --exclude (list of exclusive tables)
   exclude = var.exclude_list
+  # option: diff policy
   diff {
     skip {
       drop_schema = var.destructive
@@ -53,5 +68,4 @@ env "dev" {
       error = true
     }
   }
-  to = "file://schema.sql"
 }
